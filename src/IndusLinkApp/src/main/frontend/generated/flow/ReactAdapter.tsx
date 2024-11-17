@@ -14,16 +14,7 @@
  * the License.
  */
 import {createRoot, Root} from "react-dom/client";
-import {
-    createElement,
-    type Dispatch,
-    type ReactElement,
-    type ReactNode,
-    Ref,
-    useEffect,
-    useReducer,
-    useRef
-} from "react";
+import {createElement, type Dispatch, type ReactElement, type ReactNode, useEffect, useReducer} from "react";
 
 type FlowStateKeyChangedAction<K extends string, V> = Readonly<{
     type: 'stateKeyChanged',
@@ -50,7 +41,8 @@ type DispatchEvent<T> = T extends undefined
     ? () => boolean
     : (value: T) => boolean;
 
-const emptyAction: Dispatch<unknown> = () => {};
+const emptyAction: Dispatch<unknown> = () => {
+};
 
 /**
  * An object with APIs exposed for using in the {@link ReactAdapterElement#render}
@@ -109,7 +101,7 @@ export type RenderHooks = {
      *
      * @param name - The name attribute of the element
      */
-    readonly useContent:  ReactAdapterElement["useContent"]
+    readonly useContent: ReactAdapterElement["useContent"]
 };
 
 interface ReadyCallbackFunction {
@@ -237,7 +229,7 @@ export abstract class ReactAdapterElement extends HTMLElement {
             }
         });
 
-        const dispatchChangedEvent = this.useCustomEvent<{value: T}>(`${key}-changed`, {detail: {value}});
+        const dispatchChangedEvent = this.useCustomEvent<{ value: T }>(`${key}-changed`, {detail: {value}});
         const setValue = (value: T) => {
             this.#state[key] = value;
             dispatchChangedEvent({value});
@@ -264,7 +256,7 @@ export abstract class ReactAdapterElement extends HTMLElement {
     protected useCustomEvent<T = undefined>(type: string, options: CustomEventInit<T> = {}): DispatchEvent<T> {
         if (!this.#customEvents.has(type)) {
             const dispatch = ((detail?: T) => {
-                const eventInitDict =  detail === undefined ? options : {
+                const eventInitDict = detail === undefined ? options : {
                     ...options,
                     detail
                 };
@@ -314,7 +306,7 @@ export abstract class ReactAdapterElement extends HTMLElement {
         return this.render(this.#renderHooks);
     }
 
-    #markAsUsed() : void {
+    #markAsUsed(): void {
         // @ts-ignore
         let vaadinObject = window.Vaadin || {};
         // @ts-ignore

@@ -1,12 +1,12 @@
 package com.induslink.app.ui.views;
 
+import com.induslink.app.entity.Machine;
+import com.induslink.app.service.MachineService;
 import com.induslink.app.ui.MainLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.induslink.app.entity.Machine;
-import com.induslink.app.service.MachineService;
 
 @Route(value = "machines", layout = MainLayout.class)
 public class MachinesView extends VerticalLayout {

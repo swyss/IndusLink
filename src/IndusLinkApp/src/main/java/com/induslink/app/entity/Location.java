@@ -2,6 +2,7 @@ package com.induslink.app.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.util.List;
 
 @Entity

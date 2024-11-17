@@ -14,24 +14,11 @@
  * the License.
  */
 /// <reference lib="es2018" />
-import { Flow as _Flow } from "Frontend/generated/jar-resources/Flow.js";
-import React, {
-    useCallback,
-    useEffect,
-    useReducer,
-    useRef,
-    useState,
-    type ReactNode
-} from "react";
-import {
-    matchRoutes,
-    useBlocker,
-    useLocation,
-    useNavigate,
-    type NavigateOptions,
-} from "react-router-dom";
-import type { AgnosticRouteObject } from '@remix-run/router';
-import { createPortal } from "react-dom";
+import {Flow as _Flow} from "Frontend/generated/jar-resources/Flow.js";
+import React, {type ReactNode, useCallback, useEffect, useReducer, useRef, useState} from "react";
+import {matchRoutes, type NavigateOptions, useBlocker, useLocation, useNavigate,} from "react-router-dom";
+import type {AgnosticRouteObject} from '@remix-run/router';
+import {createPortal} from "react-dom";
 
 const flow = new _Flow({
     imports: () => import("Frontend/generated/flow/generated-flow-imports.js")
@@ -152,7 +139,7 @@ function extractPath(event: MouseEvent): void | string {
  * @param pathname pathname of navigation
  * @param search search of navigation
  */
-function fireNavigated(pathname:string, search: string) {
+function fireNavigated(pathname: string, search: string) {
     setTimeout(() => {
             window.dispatchEvent(new CustomEvent('vaadin-navigated', {
                 detail: {
@@ -203,7 +190,7 @@ function portalsReducer(portals: readonly PortalEntry[], action: PortalAction) {
 }
 
 
-type NavigateOpts =  {
+type NavigateOpts = {
     to: string,
     callback: boolean,
     opts?: NavigateOptions
@@ -267,7 +254,7 @@ function useQueuedNavigate(waitReference: React.MutableRefObject<Promise<void> |
 function Flow() {
     const ref = useRef<HTMLOutputElement>(null);
     const navigate = useNavigate();
-    const blocker = useBlocker(({ currentLocation, nextLocation }) => {
+    const blocker = useBlocker(({currentLocation, nextLocation}) => {
         navigated.current = navigated.current || (nextLocation.pathname === currentLocation.pathname && nextLocation.search === currentLocation.search && nextLocation.hash === currentLocation.hash);
         return true;
     });
@@ -323,12 +310,17 @@ function Flow() {
         navigate(path);
     }, [navigate]);
 
-    const vaadinNavigateEventHandler = useCallback((event: CustomEvent<{state: unknown, url: string, replace?: boolean, callback: boolean}>) => {
+    const vaadinNavigateEventHandler = useCallback((event: CustomEvent<{
+        state: unknown,
+        url: string,
+        replace?: boolean,
+        callback: boolean
+    }>) => {
         // @ts-ignore
         window.Vaadin.Flow.navigation = true;
         const path = '/' + event.detail.url;
         fromAnchor.current = false;
-        queuedNavigate(path, event.detail.callback, { state: event.detail.state, replace: event.detail.replace });
+        queuedNavigate(path, event.detail.callback, {state: event.detail.state, replace: event.detail.replace});
     }, [navigate]);
 
     const redirect = useCallback((path: string) => {
@@ -362,7 +354,10 @@ function Flow() {
     useEffect(() => {
         if (blocker.state === 'blocked') {
             let blockingPromise: any;
-            roundTrip.current = new Promise<void>((resolve,reject) => blockingPromise = {resolve:resolve,reject:reject});
+            roundTrip.current = new Promise<void>((resolve, reject) => blockingPromise = {
+                resolve: resolve,
+                reject: reject
+            });
 
             // Proceed to the blocked location, unless the navigation originates from a click on a link.
             // In that case continue with function execution and perform a server round-trip
@@ -427,7 +422,7 @@ function Flow() {
         }
         if (navigated.current) {
             navigated.current = false;
-            fireNavigated(location.pathname,location.search);
+            fireNavigated(location.pathname, location.search);
             return;
         }
         flow.serverSideRoutes[0].action({pathname: location.pathname, search: location.search})
@@ -436,11 +431,17 @@ function Flow() {
                 if (outlet && outlet !== container.parentNode) {
                     outlet.append(container);
                     container.addEventListener('flow-portal-add', addPortalEventHandler as EventListener);
-                    window.addEventListener('click',  navigateEventHandler);
+                    window.addEventListener('click', navigateEventHandler);
                     containerRef.current = container
                 }
-                return container.onBeforeEnter?.call(container, {pathname: location.pathname, search: location.search}, {prevent, redirect, continue() {
-                        fireNavigated(location.pathname,location.search);}}, router);
+                return container.onBeforeEnter?.call(container, {
+                    pathname: location.pathname,
+                    search: location.search
+                }, {
+                    prevent, redirect, continue() {
+                        fireNavigated(location.pathname, location.search);
+                    }
+                }, router);
             })
             .then((result: unknown) => {
                 if (typeof result === "function") {
@@ -454,10 +455,11 @@ function Flow() {
         {portals.map(({children, domNode}) => createPortal(children, domNode))}
     </>;
 }
+
 Flow.type = 'FlowContainer'; // This is for copilot to recognize this
 
 export const serverSideRoutes = [
-    { path: '/*', element: <Flow/> },
+    {path: '/*', element: <Flow/>},
 ];
 
 /**
@@ -472,10 +474,10 @@ export const loadComponentScript = (tag: String): Promise<void> => {
         useEffect(() => {
             const script = document.createElement('script');
             script.src = `/web-component/${tag}.js`;
-            script.onload = function() {
+            script.onload = function () {
                 resolve();
             };
-            script.onerror = function(err) {
+            script.onerror = function (err) {
                 reject(err);
             };
             document.head.appendChild(script);
@@ -499,16 +501,16 @@ interface Properties {
  * @param onload optional callback to be called for script onload
  * @param onerror optional callback for error loading the script
  */
-export const reactElement = (tag: string, props?: Properties, onload?: () => void, onerror?: (err:any) => void) => {
+export const reactElement = (tag: string, props?: Properties, onload?: () => void, onerror?: (err: any) => void) => {
     loadComponentScript(tag).then(() => onload?.(), (err) => {
-        if(onerror) {
+        if (onerror) {
             onerror(err);
         } else {
             console.error(`Failed to load script for ${tag}.`, err);
         }
     });
 
-    if(props) {
+    if (props) {
         return React.createElement(tag, props);
     }
     return React.createElement(tag);
@@ -518,14 +520,14 @@ export default Flow;
 
 // @ts-ignore
 if (import.meta.hot) {
-  // @ts-ignore
-  import.meta.hot.accept((newModule) => {
-    // A hot module replace for Flow.tsx happens when any JS/TS imported through @JsModule
-    // or similar is updated because this updates generated-flow-imports.js and that in turn
-    // is imported by this file. We have no means of hot replacing those files, e.g. some
-    // custom lit element so we need to reload the page. */
-    if (newModule) {
-      window.location.reload();
-    }
-  });
+    // @ts-ignore
+    import.meta.hot.accept((newModule) => {
+        // A hot module replace for Flow.tsx happens when any JS/TS imported through @JsModule
+        // or similar is updated because this updates generated-flow-imports.js and that in turn
+        // is imported by this file. We have no means of hot replacing those files, e.g. some
+        // custom lit element so we need to reload the page. */
+        if (newModule) {
+            window.location.reload();
+        }
+    });
 }

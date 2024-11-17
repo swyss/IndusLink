@@ -1,10 +1,10 @@
 package com.induslink.app.ui.views;
+
 import com.induslink.app.ui.MainLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.stereotype.Component;
 
 @Route(value = "info", layout = MainLayout.class)
 public class InfoView extends VerticalLayout {

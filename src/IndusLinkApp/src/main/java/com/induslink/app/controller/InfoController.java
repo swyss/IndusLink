@@ -1,9 +1,9 @@
 package com.induslink.app.controller;
 
 import com.induslink.app.service.DeviceService;
+import com.induslink.app.service.InterfaceService;
 import com.induslink.app.service.LocationService;
 import com.induslink.app.service.MachineService;
-import com.induslink.app.service.InterfaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
