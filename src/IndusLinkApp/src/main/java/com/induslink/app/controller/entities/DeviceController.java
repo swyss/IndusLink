@@ -2,11 +2,14 @@ package com.induslink.app.controller.entities;
 
 import com.induslink.app.models.entities.Device;
 import com.induslink.app.service.entities.DeviceService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -29,8 +32,14 @@ public class DeviceController {
     }
 
     @PostMapping
-    public ResponseEntity<Device> createDevice(@RequestBody Device device) {
-        return new ResponseEntity<>(deviceService.saveDevice(device), HttpStatus.CREATED);
+    public ResponseEntity<Device> createDevice(@Valid @RequestBody Device device) {
+        Device createdDevice = deviceService.saveDevice(device);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdDevice.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdDevice);
     }
 
     @DeleteMapping("/{id}")

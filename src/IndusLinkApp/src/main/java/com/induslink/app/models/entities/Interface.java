@@ -1,6 +1,8 @@
 package com.induslink.app.models.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.List;
@@ -14,9 +16,14 @@ public class Interface {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name; // e.g., "OPC UA", "Modbus"
-    private String protocol;
+    @NotNull
+    @Size(min = 2, max = 50)
+    private String name;
 
-    @OneToMany(mappedBy = "interfaceType", cascade = CascadeType.ALL)
+    @NotNull
+    @Size(min = 3, max = 20)
+    private String protocol; // e.g., HTTP, MQTT
+
+    @OneToMany(mappedBy = "interfaceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Device> devices;
 }
